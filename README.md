@@ -1,5 +1,5 @@
 # myservices
-jQuery Plugin used on the City of Raleigh's services page to display City service related information to constituents.  Uses Twitter's Typeahead library and an Esri ArcGIS for Server map service.
+jQuery Plugin used on the City of Raleigh's services page to display City service related information to constituents by entering their address.  Uses Twitter's Typeahead library and an Esri ArcGIS for Server map service.
 <ol>
 <li> Include jQuery and Typeahead (.js and .css) scripts in the head your HTML.</li>
 <li> Include jquery.myservices.js scripts in the head of your HTML.</li>
