@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="http://www.raleighnc.gov/cor-layout/content/static/styles/main_v2.00.css">
+		<!--styling for the typeahead results list-->
+        <!-- <link rel="stylesheet" type="text/css" href="typeahead.css"> -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<!--Twitter's typeahead code for the address search input-->
+        <script src="typeahead.bundle.min.js"></script>
+        <!--script handles JSON.stringify calls in IE8-->
+        <script src="json2.js"></script>
+		<script src="jquery.myservices.js"></script>
+            <script>
+                $(document).ready(function () {
+                        $("#services").myservices({layers:[1]});
+                });
+            </script>
+		<style>
+			/*styling for the text input, from Bootstrap's form-control class*/
+			.typeahead {
+				display: block;
+				width: 100%;
+				height: 34px;
+				padding: 6px 12px;
+				font-size: 14px;
+				line-height: 1.428571429;
+				color: #555;
+				vertical-align: middle;
+				background-color: #fff;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+				box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+				-webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+				transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="services"></div>
+	</body>
+</html>
