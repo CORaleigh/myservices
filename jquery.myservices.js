@@ -2,7 +2,7 @@
    var pluginName = "myservices",
         defaults = {
            services:{
-               url:"http://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer",
+               url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer",
                categories:[
                    {title:"Community",
                        services:[
@@ -105,6 +105,7 @@
            var container = $(this.element);
            var list = $("<ul id='servicesList' class='nolist'></ul>");
            var input = $("<input class='typeahead' id='Address' type='text' placeholder='222 West Hargett Street'></input>").appendTo(container);
+           input.keydown(this.inputKeyDown);
         $('<link/>')
             .appendTo('head')
             .attr({type: 'text/css', rel: 'stylesheet'})
@@ -114,6 +115,33 @@
        $("#servicesList").append("<li>Enter an address to view service information</li>");
        container.prepend("<label for='Address' class='ally'>Address</label>");
        },
+    inputKeyDown: function (e) {
+      if (e.keyCode === 13) {
+        Plugin.prototype.geocodeAddress($(this).val());
+      }
+    },
+    geocodeAddress: function (address) {
+      $.ajax({
+        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Locators/Composite/GeocodeServer/findAddressCandidates',
+        type: 'GET',
+        dataType: 'json',
+        data: {address: address + ", city: Raleigh",
+          searchExtent: { "xmin" : -78.8251, "ymin" : 35.7025, "xmax" :  -78.4689, "ymax" : 35.9751, "spatialReference" : {"wkid" : 4326} },
+          f: 'json'},
+      })
+      .done(function(data) {
+        if (data.candidates.length > 0) {
+            Plugin.prototype.getServices(data.candidates[0].location);
+        }
+      })
+      .fail(function() {
+        console.log("error");
+      })
+      .always(function() {
+        console.log("complete");
+      });
+      
+    },
     setTypeahead:function(input){
        var addresses = new Bloodhound({
         datumTokenizer: function (datum) {
@@ -125,7 +153,7 @@
                 type: "GET",
                 dataType: "jsonp"
             },            
-            url: "http://maps.raleighnc.gov/arcgis/rest/services/Addresses/MapServer/0/query?f=pjson&oderByFields=ADDRESS&returnGeometry=false&outFields=ADDRESS&returnDistinctValues=false",
+            url: "https://maps.raleighnc.gov/arcgis/rest/services/Addresses/MapServer/0/query?f=pjson&oderByFields=ADDRESS&returnGeometry=false&outFields=ADDRESS&returnDistinctValues=false",
             filter: function (resp) {
                 var data = []
                 if (resp.features.length > 0) {
@@ -137,7 +165,7 @@
             },
             replace: function (url, uriEncodedQuery) {
                 var newUrl = url + '&where=ADDRESSU like ' + "'" + Plugin.prototype.checkAbbreviations(uriEncodedQuery).toUpperCase() + "%'";
-                return newUrl;
+                return encodeURI(newUrl);
             }
         }
        });
@@ -148,12 +176,12 @@
              source: addresses.ttAdapter()}).on('typeahead:selected', this.typeaheadSelected);
     },
        checkAbbreviations:function (value) {
-           var abbreviations = [{full: "Saint ", abbr: "St "}, 
-           {full: "North ", abbr:"N "}, 
-           {full: "South ", abbr: "S "},
-           {full: "West ", abbr:"W "},
-           {full: "East ", abbr: "E "},
-           {full: "Martin Luther King Jr", abbr: "MLK"}];
+           var abbreviations = [{full: "Saint ", abbr: " St "}, 
+           {full: "North ", abbr:" N "}, 
+           {full: "South ", abbr: " S "},
+           {full: "West ", abbr:" W "},
+           {full: "East ", abbr: " E "},
+           {full: "Martin Luther King Jr", abbr: " MLK"}];
            value = value.replace("'", "");
            value = value.replace(".", "");
            $.each(abbreviations, function (i, a) {
@@ -163,7 +191,7 @@
        },
     typeaheadSelected:function (obj, data, dataset) {
         $.ajax({
-            url: 'http://maps.raleighnc.gov/arcgis/rest/services/Addresses/MapServer/0/query',
+            url: 'https://maps.raleighnc.gov/arcgis/rest/services/Addresses/MapServer/0/query',
             type: 'GET',
             dataType: 'jsonp',
             data: {
@@ -192,7 +220,7 @@
                 f: "pjson"
             };
                $.ajax({
-                url: 'http://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/identify',
+                url: 'https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/identify',
                 type: 'GET',
                 dataType: 'jsonp',
                 data: data
