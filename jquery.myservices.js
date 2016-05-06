@@ -122,10 +122,10 @@
     },
     geocodeAddress: function (address) {
       $.ajax({
-        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Locators/Composite/GeocodeServer/findAddressCandidates',
+        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Locators/CompositeLocator/GeocodeServer/findAddressCandidates',
         type: 'GET',
         dataType: 'json',
-        data: {address: address + ", city: Raleigh",
+        data: {singleLine: address + ", Raleigh",
           searchExtent: { "xmin" : -78.8251, "ymin" : 35.7025, "xmax" :  -78.4689, "ymax" : 35.9751, "spatialReference" : {"wkid" : 4326} },
           f: 'json'},
       })
