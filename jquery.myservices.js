@@ -38,7 +38,7 @@
                    },
                    {title:"Environmental",
                        services:[
-                           {title:"<a href='/services/content/PWksStormwater/Articles/StormwaterUtilityMainPage.html'>Drainage Basin</a>:",
+                           {title:"<a href='/services/content/PWksStormwater/Articles/Stormwater.html'>Drainage Basin</a>:",
                            labels:"[BASINS:proper]",
                            layerId:10}
                        ]
@@ -296,7 +296,6 @@
            var newWeek = "";
            var week = "";
            $.each(results, function(index, result) {
-               console.log(result.layerName);
              if (result.layerName == 'Collection Areas'){
 
                if(result.attributes['Service Day']){
