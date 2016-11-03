@@ -2,7 +2,7 @@
    var pluginName = "myservices",
         defaults = {
            services:{
-               url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer",
+               url:"http://mapstest.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer",
                categories:[
                    {title:"Community",
                        services:[
@@ -47,7 +47,13 @@
                        services:[
                            {title:"<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Section</a>:",
                            labels:"[SECTION]",
-                           layerId:8}
+                           layerId:8},
+                           {title:"<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Pass #1</a>:",
+                           labels:"[START_DATE:date] to [END_DATE:date]",
+                           layerId:8},
+                           {title:"<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Status</a>:",
+                           labels:"[STATUS]",
+                           layerId:8}                            
                        ]
                    },
                    {title:"Recreation",
@@ -220,7 +226,7 @@
                 f: "pjson"
             };
                $.ajax({
-                url: 'https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/identify',
+                url: defaults.services.url + '/identify',
                 type: 'GET',
                 dataType: 'jsonp',
                 data: data
@@ -243,6 +249,7 @@
                        if(category.title == "Recycling" || category.title == "Solid Waste"){
                            Plugin.prototype.addSwsCallout(list, data.results);
                        }
+  
                        list.append("<li><h4>"+category.title+"</h4></li>");
                        var div = $("<ul class='nolist'></ul>");
                        $(category.services).each(function(j,service){
@@ -252,9 +259,23 @@
 
                            if(result.length > 0){
                                $(result).each(function(i, item){
+                                  if (category.title == "Leaf Collection") {
+                                    console.log(item);
+                                    if (item.attributes.PASS) {
+                                      if (item.attributes.PASS === "2") {
+                                        service.labels = service.labels.replace("START_DATE", "START_DATE_1");
+                                        service.labels = service.labels.replace("END_DATE", "END_DATE_1");
+                                        service.labels = service.labels.replace("STATUS", "STATUS_1");                                        
+                                      }
+                                    }
+                                  }                                
                                    var li = $("<li></li>");
-                                       li.append(Plugin.prototype.getServiceLabel(service.title, service.layerId, item)+" "+Plugin.prototype.getServiceLabel(service.labels, service.layerId, item));
-                                       div.append(li);
+                                   var html = Plugin.prototype.getServiceLabel(service.title, service.layerId, item)+" "+Plugin.prototype.getServiceLabel(service.labels, service.layerId, item);
+                                       
+                                      if (html.indexOf('Null') < 0 && html.indexOf('undefined') < 0) {
+                                        li.append(html);
+                                        div.append(li);
+                                      }
                                });
                                numadded++;
                            }
@@ -342,6 +363,12 @@
                        //handle NC abbreviation
                        value = value.replace(" Nc"," NC");
                        break;
+                   case "date":
+                       if (value != "Null") {
+                         var date = new Date(value);                        
+                         value = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+                       }
+                       break;                       
                }                
            } else {
                value = '';
