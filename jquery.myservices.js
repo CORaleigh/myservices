@@ -45,7 +45,7 @@
                    },
                    {title:"Leaf Collection",
                        services:[
-                           {title:"<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Section</a>:",
+                           {title:"<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Zone</a>:",
                            labels:"[SECTION]",
                            layerId:8},
                            {title:"<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Starts</a>:",
