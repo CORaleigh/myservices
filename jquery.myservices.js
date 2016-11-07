@@ -2,7 +2,7 @@
    var pluginName = "myservices",
         defaults = {
            services:{
-               url:"http://mapstest.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer",
+               url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer",
                categories:[
                    {title:"Community",
                        services:[
