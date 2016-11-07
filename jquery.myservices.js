@@ -264,12 +264,10 @@
                                     if (item.attributes.PASS) {
                                       if (item.attributes.PASS === "2") {
                                         service.labels = service.labels.replace("START_DATE", "START_DATE_1");
-                                        service.labels = service.labels.replace("END_DATE", "END_DATE_1");
-                                        service.labels = service.labels.replace("STATUS", "STATUS_1");                                        
+                                        service.labels = service.labels.replace("END_DATE", "END_DATE_1");                                     
                                       } else {
                                         service.labels = service.labels.replace("START_DATE_1", "START_DATE");
-                                        service.labels = service.labels.replace("END_DATE_1", "END_DATE");
-                                        service.labels = service.labels.replace("STATUS_1", "STATUS");                                              
+                                        service.labels = service.labels.replace("END_DATE_1", "END_DATE");                                           
                                       }
                                     }
                                   }                                
