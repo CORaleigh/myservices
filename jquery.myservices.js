@@ -45,7 +45,7 @@
                    },
                    {title:"Leaf Collection",
                        services:[
-                           {title:"<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Zone</a>:",
+                           {title:"<a href='http://ral.maps.arcgis.com/apps/webappviewer/index.html?id=3ec0bcd2a27b4dae94e024a91b5aea5b&query=Leaf Collection Zones,SECTION,[SECTION]'>Zone</a>:",
                            labels:"[SECTION]",
                            layerId:8},
                            {title:"<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Starts</a>:",
