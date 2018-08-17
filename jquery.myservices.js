@@ -1,96 +1,176 @@
 ;(function ( $, window, document, undefined ) {
    var pluginName = "myservices",
+
         defaults = {
+           features: [],
+           data: [],
            services:{
-               url:"http://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/PortalServices/FeatureServer/query",
+               url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/query",
                categories:[
                    {title:"Community",
                        services:[
-                           {title:"<a href='/business/content/PlanDev/Articles/DevServ/Annexations.html'>Annexation Year</a>:",
-                           labels:"[CASE_YEAR]",
-                           layerId:4},
-                           {title:"<a href='/community/content/CommServices/Articles/CitizensAdvisoryCouncil.html'>CAC</a>:",
-                           labels:"[NAME]",
-                           layerId:1},
-                           {title:"<a href='/government/content/BoardsCommissions/Articles/CityCouncil.html'>City Council District</a>:",
-                           labels:"[COUNCIL_DIST]",
-                           layerId:2},
-                           {title:"<a href='/government/content/PubAffairs/Articles/CityCouncilBiographies.html'>Council Member</a>:",
-                           labels:"[COUNCIL_PERSON]",
-                           layerId:2},
-                           {title:"<a href='/safety/content/Police/Articles/[DISTRICT]District.html'>Police District</a>:",
-                           labels:"[DISTRICT]",
-                           layerId:3},
-                           {title:"<a href='http://www.raleighnc.gov/' target='_blank'>Amplified Noise Pilot Area</a>:",
-                           labels:"Yes",
-                           layerId:15}
+                           {
+                                url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/4/query",
+                                texts:                       
+                                [
+                                    {
+                                        title:"<a href='/business/content/PlanDev/Articles/DevServ/Annexations.html'>Annexation Year</a>:",
+                                        labels:"[CASE_YEAR]"
+                                    }
+                                ]
+                            },
+                            {
+                                url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/1/query",
+                                texts:                       
+                                [
+                                    {
+                                        title:"<a href='/community/content/CommServices/Articles/CitizensAdvisoryCouncil.html'>CAC</a>:",
+                                        labels:"[NAME]"
+                                    }
+                                ]
+                            },                                                      
+                            {
+                                url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/2/query",
+                                texts:                       
+                                [
+                                    {
+                                        title:"<a href='/government/content/BoardsCommissions/Articles/CityCouncil.html'>City Council District</a>:",
+                                        labels:"[COUNCIL_DIST]"
+                                    },
+                                    {
+                                        title:"<a href='/government/content/PubAffairs/Articles/CityCouncilBiographies.html'>Council Member</a>:",
+                                        labels:"[COUNCIL_PERSON]"
+                                    }                                    
+                                ]
+                            },   
+                            {
+                                url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/3/query",
+                                texts:                       
+                                [
+                                    {
+                                        title:"<a href='/safety/content/Police/Articles/[DISTRICT]District.html'>Police District</a>:",
+                                        labels:"[DISTRICT]"
+                                    }
+                                ]
+                            }
                        ]
                    },
                    {title:"Elections",
                        services:[
-                           {title:"<a href='http://www.wakegov.com/elections/Pages/default.aspx' target='_blank'>Polling Place</a>:",
-                           labels:"[POLL_PL]",
-                           layerId:6},
-                           {title:"<a href='http://www.wakegov.com/elections/Pages/default.aspx' target='_blank'>Voting Precinct</a>:",
-                           labels:"[PRECINCT]",
-                           layerId:6}
+                        {
+                            url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/6/query",
+                            texts:                       
+                            [
+                                {
+                                    title:"<a href='http://www.wakegov.com/elections/Pages/default.aspx' target='_blank'>Polling Place</a>:",
+                                    labels:"[WAKE.POLLING_PLACES.POLL_PL]"
+                                },
+                                {
+                                    title:"<a href='http://www.wakegov.com/elections/Pages/default.aspx' target='_blank'>Voting Precinct</a>:",
+                                    labels:"[WAKE.POLLING_PLACES.PRECINCT]"                                    
+                                }
+                            ]
+                        }
                        ]
                    },
                    {title:"Environmental",
                        services:[
-                           {title:"<a href='/services/content/PWksStormwater/Articles/Stormwater.html'>Drainage Basin</a>:",
-                           labels:"[BASINS:proper]",
-                           layerId:10}
-                       ]
+                        {
+                            url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/10/query",
+                            texts:                       
+                            [
+                                {
+                                    title:"<a href='/services/content/PWksStormwater/Articles/Stormwater.html'>Drainage Basin</a>:",
+                                    labels:"[BASINS:proper]"                                 
+                                }
+                            ]
+                        }
+                       ]                       
                    },
                    {title:"Leaf Collection",
-                       services:[
-                           {title:"<a href='http://ral.maps.arcgis.com/apps/webappviewer/index.html?id=3ec0bcd2a27b4dae94e024a91b5aea5b&query=Leaf Collection Zones,SECTION,[SECTION]'>Zone</a>:",
-                           labels:"[SECTION]",
-                           layerId:8},
-                           {title:"<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Starts</a>:",
-                           labels:"[START_DATE:date]",
-                           layerId:8},
-                           {title:"<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Status</a>:",
-                           labels:"[STATUS]",
-                           layerId:8}                            
-                       ]
+                   services:[
+                    {
+                        url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/8/query",
+                        texts:                       
+                        [
+                            {
+                                title:"<a href='http://ral.maps.arcgis.com/apps/webappviewer/index.html?id=3ec0bcd2a27b4dae94e024a91b5aea5b&query=Leaf Collection Zones,SECTION,[SECTION]'>Zone</a>:",
+                                labels:"[SECTION]"                                
+                            },
+                            {
+                                title:"<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Starts</a>:",
+                                labels:"[START_DATE:date]"                              
+                            },
+                            {
+                                title:"<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Status</a>:",
+                                labels:"[STATUS]"                           
+                            }                                                        
+                        ]
+                    }
+                   ]                       
                    },
                    {title:"Recreation",
-                       services:[
-                           {title:"<a href='/parks/content/PRecRecreation/Articles/AthleticYouthRegistrationDates.html'>Athletic District</a>:",
-                           labels:"[DISTRICT]",
-                           layerId:14}
-                       ]
+                   services:[
+                    {
+                        url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/14/query",
+                        texts:                       
+                        [
+                            {
+                                title:"<a href='/parks/content/PRecRecreation/Articles/AthleticYouthRegistrationDates.html'>Athletic District</a>:",
+                                labels:"[DISTRICT]"                                
+                            }
+                        ]
+                    }
+                   ]                         
                    },
                    {title:"Recycling",
                        services:[
-                           {title:"<a href='/services/content/SolidWaste/Articles/RecyclePages.html'>Day</a>:",
-                           labels:"[DAY]",
-                           layerId:12},
-                           {title:"<a href='/services/content/SolidWaste/Articles/Recyclables.html'>Route</a>:",
-                           labels:"[RECYCLE]",
-                           layerId:12},
-                           {title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Week</a>:",
-                           labels:"[WEEK]",
-                           layerId:12}
-                       ]
+                        {
+                            url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/12/query",
+                            texts:                       
+                            [
+                                {
+                                    title:"<a href='/services/content/SolidWaste/Articles/RecyclePages.html'>Day</a>:",
+                                    labels:"[DAY]"                              
+                                },
+                                {
+                                    title:"<a href='/services/content/SolidWaste/Articles/Recyclables.html'>Route</a>:",
+                                    labels:"[RECYCLE]"                            
+                                },
+                                {
+                                    title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Week</a>:",
+                                    labels:"[WEEK]"                        
+                                }                                                        
+                            ]
+                        }
+                       ]                         
                    },
                    {title:"Solid Waste",
                        services:[
-                           {title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Garbage Day</a>:",
-                           labels:"[DAY:proper]",
-                           layerId:12},
-                           {title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Garbage Route</a>:",
-                           labels:"[GARBAGE]",
-                           layerId:12},
-                           {title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Yard Waste Day</a>:",
-                           labels:"[DAY:proper]",
-                           layerId:12},
-                           {title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Yard Waste Route</a>:",
-                           labels:"[YARDWASTE]",
-                           layerId:12}
-                       ]
+                        {
+                            url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/12/query",
+                            texts:                       
+                            [
+                                {
+                                    title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Garbage Day</a>:",
+                                    labels:"[DAY:proper]"                           
+                                },
+                                {
+                                    title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Garbage Route</a>:",
+                                    labels:"[GARBAGE]"                           
+                                },
+                                {
+                                    title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Yard Waste Day</a>:",
+                                    labels:"[DAY:proper]"                       
+                                }
+                                ,
+                                {
+                                    title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Yard Waste Route</a>:",
+                                    labels:"[YARDWASTE]"                      
+                                }                                                                                            
+                            ]
+                        }
+                       ]                            
                    }
                ]
            }
@@ -232,75 +312,226 @@
                 //layers: "all" + ((this.options.layers) ? ':' + this.options.layers.toString():''),
                 f: "pjson"
             };
-               $.ajax({
-                url: defaults.services.url,
+            data = {
+                geometry: JSON.stringify(point),
+                geometryType: "esriGeometryPoint",  
+                returnGeometry: false,
+                f: "pjson",
+                outFields: '*'
+            }        
+            Plugin.prototype.getCategories(defaults.services.categories, data).then(function() {
+                defaults.data=  defaults.data.sort(Plugin.prototype.sortByCategory)
+                console.log(defaults.data)
+                list.empty();
+                                       var html = "";
+                       var numadded = 0;
+                $(defaults.data).each(function(i, item){
+                     list.append("<li><h4>"+item.category.title+"</h4></li>");
+                     var div = $("<ul class='nolist'></ul>");
+
+                                $(item.features).each(function(i, feature){
+                                    if (feature.features.length > 0) {
+                                        $(feature.service.texts).each(function(j, text) {
+                                            if (item.category.title == "Leaf Collection") {
+                                                console.log(item);
+                                                if (feature.features[0].attributes.PASS) {
+                                                if (feature.features[0].attributes.PASS === "2") {
+                                                    text.labels = text.labels.replace("START_DATE", "START_DATE_1");
+                                                    text.labels = text.labels.replace("END_DATE", "END_DATE_1");                                     
+                                                } else {
+                                                    text.labels = text.labels.replace("START_DATE_1", "START_DATE");
+                                                    text.labels = text.labels.replace("END_DATE_1", "END_DATE");                                           
+                                                }
+                                                }
+                                            }                                
+                                            var li = $("<li></li>");
+                                            var html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0])+" "+Plugin.prototype.getServiceLabel(text.labels, feature.service.layerId, feature.features[0]);
+                                                
+                                                if (html.indexOf('Null') < 0 && html.indexOf('undefined') < 0) {
+                                                    li.append(html);
+                                                    div.append(li);
+                                                }
+                                        });
+                                    }
+                                    numadded++;
+                                    if (numadded > 0){
+                                        list.append(div);
+                                    }else{
+                                            var li = $("<li>No information available</li>");
+                                            div.append(li);
+                                            list.append(div) ;
+                                    }                                       
+                                    });
+
+                              
+                });
+
+            });
+                
+            // var promises = [];
+
+            // for (var i = 0;i < defaults.services.categories.length; i++) {
+            //     for (j = 0; j < defaults.services.categories[i].services.length; j++) {
+
+            //         var def = new $.Deferred();
+
+            //         var url = defaults.services.categories[i].services[j].url;
+
+            //     $.when( Plugin.prototype.queryServices(data, url) ).then(function (data) {
+            //         console.log(data);
+            //     });
+            // }
+                // $.ajax({
+                //     url: defaults.services.categories[i].services[cnt].url,
+                //     type: 'GET',
+                //     dataType: 'jsonp',
+                //     data: data
+                // }).then(function (data) {
+                //     if (cnt < services.length) {
+
+                //     }
+                //     cnt += 1;
+
+                // });
+                // for (j = 0; j < defaults.services.categories[i].services.length; j++) {
+
+
+                // }
+            }
+            //    $.ajax({
+            //     url: defaults.services.url,
+            //     type: 'GET',
+            //     dataType: 'jsonp',
+            //     data: data
+            // }).done(function (data) {
+            //        list.empty();
+            //        if (Plugin.prototype.options.layers) {
+            //            defaults.services.categories = $(defaults.services.categories).filter(function () {
+            //                var cnt = 0;
+            //                $.each(this.services, function (i, service) {
+            //                    if ($.inArray(service.layerId, Plugin.prototype.options.layers) > -1) {
+            //                        cnt +=1;
+            //                    }
+            //                });
+            //                return cnt > 0;
+            //            });
+            //        }
+            //        $(defaults.services.categories).each(function(i, category){
+            //            var html = "";
+            //            var numadded = 0;
+            //         //    if(category.title == "Recycling" || category.title == "Solid Waste"){
+            //         //        Plugin.prototype.addSwsCallout(list, data.layers);
+            //         //    }
+  
+            //            list.append("<li><h4>"+category.title+"</h4></li>");
+            //            var div = $("<ul class='nolist'></ul>");
+            //            $(category.services).each(function(j,service){
+            //                var result = $(data.layers).filter(function(){
+            //                    return this.id == service.layerId;
+            //                });
+            //                if (result[0]) {
+            //                 if(result[0].features.length > 0){
+            //                     $(result[0].features).each(function(i, item){
+            //                         if (category.title == "Leaf Collection") {
+            //                             console.log(item);
+            //                             if (item.attributes.PASS) {
+            //                             if (item.attributes.PASS === "2") {
+            //                                 service.labels = service.labels.replace("START_DATE", "START_DATE_1");
+            //                                 service.labels = service.labels.replace("END_DATE", "END_DATE_1");                                     
+            //                             } else {
+            //                                 service.labels = service.labels.replace("START_DATE_1", "START_DATE");
+            //                                 service.labels = service.labels.replace("END_DATE_1", "END_DATE");                                           
+            //                             }
+            //                             }
+            //                         }                                
+            //                         var li = $("<li></li>");
+            //                         var html = Plugin.prototype.getServiceLabel(service.title, service.layerId, item)+" "+Plugin.prototype.getServiceLabel(service.labels, service.layerId, item);
+                                        
+            //                             if (html.indexOf('Null') < 0 && html.indexOf('undefined') < 0) {
+            //                                 li.append(html);
+            //                                 div.append(li);
+            //                             }
+            //                     });
+            //                     numadded++;
+            //                 }
+            //                }
+            //            });
+
+            //            if (numadded > 0){
+            //                list.append(div);
+            //            }else{
+            //                    var li = $("<li>No information available</li>");
+            //                    div.append(li);
+            //                    list.append(div) ;
+            //            }
+            //        });
+            //    });
+           //}
+       },
+       getCategories: function(categories, data) {
+        defaults.data = [];
+        var deferreds = [];
+
+        $.each(categories, function(i, category) {
+
+            var def =  Plugin.prototype.getServices2(category.services, data).then(function(results){
+                defaults.data.push({category: category, features: defaults.features})
+             });
+             deferreds.push(def);
+        });
+        return $.when.apply($, deferreds).then(function () {
+        });
+
+       },
+
+       sortByCategory: function (a, b) {
+        if (a.category.title < b.category.title)
+        return -1;
+        if (a.category.title > b.category.title)
+            return 1;
+        return 0;
+       },
+
+
+
+        getServices2: function (services, data) {
+        var deferreds = [];
+        var features = [];
+        $.each(services, function(i, service) { 
+            var def = $.ajax({
+                url: service.url,
                 type: 'GET',
                 dataType: 'jsonp',
                 data: data
-            }).done(function (data) {
-                   list.empty();
-                   if (Plugin.prototype.options.layers) {
-                       defaults.services.categories = $(defaults.services.categories).filter(function () {
-                           var cnt = 0;
-                           $.each(this.services, function (i, service) {
-                               if ($.inArray(service.layerId, Plugin.prototype.options.layers) > -1) {
-                                   cnt +=1;
-                               }
-                           });
-                           return cnt > 0;
-                       });
-                   }
-                   $(defaults.services.categories).each(function(i, category){
-                       var html = "";
-                       var numadded = 0;
-                    //    if(category.title == "Recycling" || category.title == "Solid Waste"){
-                    //        Plugin.prototype.addSwsCallout(list, data.layers);
-                    //    }
-  
-                       list.append("<li><h4>"+category.title+"</h4></li>");
-                       var div = $("<ul class='nolist'></ul>");
-                       $(category.services).each(function(j,service){
-                           var result = $(data.layers).filter(function(){
-                               return this.id == service.layerId;
-                           });
-                           if (result[0]) {
-                            if(result[0].features.length > 0){
-                                $(result[0].features).each(function(i, item){
-                                    if (category.title == "Leaf Collection") {
-                                        console.log(item);
-                                        if (item.attributes.PASS) {
-                                        if (item.attributes.PASS === "2") {
-                                            service.labels = service.labels.replace("START_DATE", "START_DATE_1");
-                                            service.labels = service.labels.replace("END_DATE", "END_DATE_1");                                     
-                                        } else {
-                                            service.labels = service.labels.replace("START_DATE_1", "START_DATE");
-                                            service.labels = service.labels.replace("END_DATE_1", "END_DATE");                                           
-                                        }
-                                        }
-                                    }                                
-                                    var li = $("<li></li>");
-                                    var html = Plugin.prototype.getServiceLabel(service.title, service.layerId, item)+" "+Plugin.prototype.getServiceLabel(service.labels, service.layerId, item);
-                                        
-                                        if (html.indexOf('Null') < 0 && html.indexOf('undefined') < 0) {
-                                            li.append(html);
-                                            div.append(li);
-                                        }
-                                });
-                                numadded++;
-                            }
-                           }
-                       });
+            }).done(function (results) {
+                features.push({ service: service, features: results.features });
+            });
+            deferreds.push(def)
+        });
 
-                       if (numadded > 0){
-                           list.append(div);
-                       }else{
-                               var li = $("<li>No information available</li>");
-                               div.append(li);
-                               list.append(div) ;
-                       }
-                   });
-               });
-           }
+
+        //return $.when.apply(undefined, promises).promise();
+        return $.when.apply($, deferreds).then(function () {
+
+            defaults.features = features;
+        });
+
+
+
+       },
+       queryServices:function (data, url) {
+        var dfd = jQuery.Deferred();
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'jsonp',
+            data: data
+        }).then(function (data) {
+            dfd.resolve({url: url, features: data.features});
+        });
+        return dfd.promise();
+
        },
        getServiceLabel:function(label, id, service){
                var plugin = this;
