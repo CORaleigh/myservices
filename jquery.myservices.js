@@ -2,7 +2,7 @@
    var pluginName = "myservices",
         defaults = {
            services:{
-               url:"https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer",
+               url:"http://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/PortalServices/FeatureServer/query",
                categories:[
                    {title:"Community",
                        services:[
@@ -66,29 +66,29 @@
                    {title:"Recycling",
                        services:[
                            {title:"<a href='/services/content/SolidWaste/Articles/RecyclePages.html'>Day</a>:",
-                           labels:"[Service Day]",
+                           labels:"[DAY]",
                            layerId:12},
                            {title:"<a href='/services/content/SolidWaste/Articles/Recyclables.html'>Route</a>:",
-                           labels:"[Recycling Route]",
+                           labels:"[RECYCLE]",
                            layerId:12},
                            {title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Week</a>:",
-                           labels:"[Recycling Week]",
+                           labels:"[WEEK]",
                            layerId:12}
                        ]
                    },
                    {title:"Solid Waste",
                        services:[
                            {title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Garbage Day</a>:",
-                           labels:"[Service Day:proper]",
+                           labels:"[DAY:proper]",
                            layerId:12},
                            {title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Garbage Route</a>:",
-                           labels:"[Garbage Route]",
+                           labels:"[GARBAGE]",
                            layerId:12},
                            {title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Yard Waste Day</a>:",
-                           labels:"[Service Day:proper]",
+                           labels:"[DAY:proper]",
                            layerId:12},
                            {title:"<a href='/services/content/SolidWaste/Articles/ServiceSchedule.html'>Yard Waste Route</a>:",
-                           labels:"[Yardwaste Route]",
+                           labels:"[YARDWASTE]",
                            layerId:12}
                        ]
                    }
@@ -217,16 +217,23 @@
            var point = {x: geometry.x, y: geometry.y, spatialReference:{wkid: 102719, latestWkid: 2264}},
                extent = {xmin:point.x-2,ymin:point.y-2,xmax:point.x+2,ymax:point.y+2,spatialReference:point.spatialReference},
             data = {
-                mapExtent: JSON.stringify(extent),
                 geometry: JSON.stringify(point),
-                imageDisplay: "1,1,96",
-                tolerance: 1,
+                layerDefs: JSON.stringify([{ "layerId" : 1,"where": "1=1", "outfields": "NAME"},
+                    { "layerId" : 2,"where": "1=1", "outfields": "COUNCIL_DIST,COUNCIL_PERSON"},
+                    { "layerId" : 3,"where": "1=1", "outfields": "DISTRICT"},
+                    { "layerId" : 4,"where": "1=1", "outfields": "CASE_YEAR"},
+                    { "layerId" : 6,"where": "1=1", "outfields": "PRECINCT,POLL_PL"},
+                    { "layerId" : 8,"where": "1=1", "outfields": "SECTION,START_DATE"},
+                    { "layerId" : 10,"where": "1=1", "outfields": "BASINS"},
+                    { "layerId" : 12,"where": "1=1", "outfields": "DAY,RECYCLE,GARBAGE,YARDWASTE,WEEK"},
+                    { "layerId" : 14,"where": "1=1", "outfields": "DISTRICT"}]),
+                geometryType: "esriGeometryPoint",  
                 returnGeometry: false,
-                layers: "all" + ((this.options.layers) ? ':' + this.options.layers.toString():''),
+                //layers: "all" + ((this.options.layers) ? ':' + this.options.layers.toString():''),
                 f: "pjson"
             };
                $.ajax({
-                url: defaults.services.url + '/identify',
+                url: defaults.services.url,
                 type: 'GET',
                 dataType: 'jsonp',
                 data: data
@@ -246,40 +253,41 @@
                    $(defaults.services.categories).each(function(i, category){
                        var html = "";
                        var numadded = 0;
-                       if(category.title == "Recycling" || category.title == "Solid Waste"){
-                           Plugin.prototype.addSwsCallout(list, data.results);
-                       }
+                    //    if(category.title == "Recycling" || category.title == "Solid Waste"){
+                    //        Plugin.prototype.addSwsCallout(list, data.layers);
+                    //    }
   
                        list.append("<li><h4>"+category.title+"</h4></li>");
                        var div = $("<ul class='nolist'></ul>");
                        $(category.services).each(function(j,service){
-                           var result = $(data.results).filter(function(){
-                               return this.layerId == service.layerId;
+                           var result = $(data.layers).filter(function(){
+                               return this.id == service.layerId;
                            });
-
-                           if(result.length > 0){
-                               $(result).each(function(i, item){
-                                  if (category.title == "Leaf Collection") {
-                                    console.log(item);
-                                    if (item.attributes.PASS) {
-                                      if (item.attributes.PASS === "2") {
-                                        service.labels = service.labels.replace("START_DATE", "START_DATE_1");
-                                        service.labels = service.labels.replace("END_DATE", "END_DATE_1");                                     
-                                      } else {
-                                        service.labels = service.labels.replace("START_DATE_1", "START_DATE");
-                                        service.labels = service.labels.replace("END_DATE_1", "END_DATE");                                           
-                                      }
-                                    }
-                                  }                                
-                                   var li = $("<li></li>");
-                                   var html = Plugin.prototype.getServiceLabel(service.title, service.layerId, item)+" "+Plugin.prototype.getServiceLabel(service.labels, service.layerId, item);
-                                       
-                                      if (html.indexOf('Null') < 0 && html.indexOf('undefined') < 0) {
-                                        li.append(html);
-                                        div.append(li);
-                                      }
-                               });
-                               numadded++;
+                           if (result[0]) {
+                            if(result[0].features.length > 0){
+                                $(result[0].features).each(function(i, item){
+                                    if (category.title == "Leaf Collection") {
+                                        console.log(item);
+                                        if (item.attributes.PASS) {
+                                        if (item.attributes.PASS === "2") {
+                                            service.labels = service.labels.replace("START_DATE", "START_DATE_1");
+                                            service.labels = service.labels.replace("END_DATE", "END_DATE_1");                                     
+                                        } else {
+                                            service.labels = service.labels.replace("START_DATE_1", "START_DATE");
+                                            service.labels = service.labels.replace("END_DATE_1", "END_DATE");                                           
+                                        }
+                                        }
+                                    }                                
+                                    var li = $("<li></li>");
+                                    var html = Plugin.prototype.getServiceLabel(service.title, service.layerId, item)+" "+Plugin.prototype.getServiceLabel(service.labels, service.layerId, item);
+                                        
+                                        if (html.indexOf('Null') < 0 && html.indexOf('undefined') < 0) {
+                                            li.append(html);
+                                            div.append(li);
+                                        }
+                                });
+                                numadded++;
+                            }
                            }
                        });
 
