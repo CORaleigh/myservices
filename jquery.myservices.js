@@ -5,6 +5,9 @@
     defaults = {
       features: [],
       data: [],
+      citylimits: {
+          url: 'https://maps.raleighnc.gov/arcgis/rest/services/Planning/Jurisdictions/MapServer/0/query'
+      },
       services: {
         url: "https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/query",
         categories: [{
@@ -79,19 +82,31 @@
             title: "Leaf Collection",
             services: [{
               title: "Leaf Collection",
-              url: "https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/8/query",
+              url: "https://maps.raleighnc.gov/arcgis/rest/services/Private/EditableFeatures/FeatureServer/2/query",
               texts: [{
                   title: "<a href='http://ral.maps.arcgis.com/apps/webappviewer/index.html?id=3ec0bcd2a27b4dae94e024a91b5aea5b&query=Leaf Collection Zones,SECTION,[SECTION]'>Zone</a>:",
                   labels: "[SECTION]"
                 },
                 {
-                  title: "<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Starts</a>:",
-                  labels: "[START_DATE:date]"
+                    title: "<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Current Collection</a>:",
+                    labels: "[PASS]"
+                },                
+                {
+                  title: "<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Current Status</a>:",
+                  labels: "[STATUS]"
                 },
                 {
-                  title: "<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Status</a>:",
-                  labels: "[STATUS]"
+                  title: "<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>First Collection</a>:",
+                  labels: "<br/>Place leaf piles at curb between [START_DATE:date] and [END_DATE:date]"
+                },
+                {
+                  title: "<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Second Collection</a>:",
+                  labels: "<br/>Place leaf piles at curb between [START_DATE_1:date] and [END_DATE_1:date]"
                 }
+                // {
+                //   title: "<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Starts</a>:",
+                //   labels: "[START_DATE:date]"
+                // }
               ]
             }]
           },
@@ -386,6 +401,8 @@
           f: "pjson",
           outFields: '*'
         }
+        Plugin.prototype.checkCityLimits(point).then(function (inlimits) {
+            console.log(inlimits);
         Plugin.prototype.getCategories(defaults.services.categories, data).then(function () {
           defaults.data = defaults.data.sort(Plugin.prototype.sortByCategory)
           console.log(defaults.data)
@@ -393,22 +410,27 @@
           var html = "";
           var numadded = 0;
           $(defaults.data).each(function (i, item) {
+            numadded = 0;
             list.append("<li><h4>" + item.category.title + "</h4></li>");
             var div = $("<ul class='nolist'></ul>");
 
             $(item.features).each(function (i, feature) {
-              numadded = 0;
+              if ((item.category.title === 'Leaf Collection' && !inlimits)) {
+                  feature.features = [];
+              }
               if (feature.features.length > 0) {
                 $(feature.service.texts).each(function (j, text) {
                   if (item.category.title == "Leaf Collection") {
                     console.log(item);
                     if (feature.features[0].attributes.PASS) {
                       if (feature.features[0].attributes.PASS === "2") {
-                        text.labels = text.labels.replace("START_DATE", "START_DATE_1");
-                        text.labels = text.labels.replace("END_DATE", "END_DATE_1");
+                        // text.labels = text.labels.replace("START_DATE", "START_DATE_1");
+                        // text.labels = text.labels.replace("END_DATE", "END_DATE_1");
+                        feature.features[0].attributes.PASS = 'Second';
                       } else {
-                        text.labels = text.labels.replace("START_DATE_1", "START_DATE");
-                        text.labels = text.labels.replace("END_DATE_1", "END_DATE");
+                        // text.labels = text.labels.replace("START_DATE_1", "START_DATE");
+                        // text.labels = text.labels.replace("END_DATE_1", "END_DATE");
+                        feature.features[0].attributes.PASS = 'First';
                       }
                     }
                   }
@@ -423,19 +445,19 @@
                 numadded++;
               }
 
-              console.log(numadded);
-              if (numadded > 0) {
+
+            });
+            if (numadded > 0) {
                 list.append(div);
               } else {
                 var li = $("<li>No information available</li>");
                 div.append(li);
                 list.append(div);
               }
-            });
-
 
           });
         });
+    });
       }
     },
     getCategories: function (categories, data) {
@@ -489,16 +511,30 @@
         });
         deferreds.push(def)
       });
-
-
-      //return $.when.apply(undefined, promises).promise();
       return $.when.apply($, deferreds).then(function () {
         features = features.sort(Plugin.prototype.sortByService);
         defaults.features = features;
       });
+    },
+    checkCityLimits: function (point) {
+        var dfd = jQuery.Deferred();
 
-
-
+        $.ajax({
+          url: defaults.citylimits.url,
+          type: 'GET',
+          dataType: 'jsonp',
+          data: {
+            f: 'pjson',
+            where: "LONG_NAME = 'RALEIGH'",
+            geometry: JSON.stringify(point),
+            geometryType: "esriGeometryPoint",
+            returnGeometry: false,
+            returnCountOnly: true
+          }
+        }).then(function (data) {
+          dfd.resolve(data.count > 0);
+        });
+        return dfd.promise();       
     },
     queryServices: function (data, url) {
       var dfd = jQuery.Deferred();
