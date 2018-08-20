@@ -536,44 +536,6 @@
       label = label.replace(new RegExp(";", "gi"), "<br/>");
       return label;
     },
-    addSwsCallout: function (list, results) {
-      var day = "";
-      var newDay = "";
-      var newWeek = "";
-      var week = "";
-      $.each(results, function (index, result) {
-        if (result.layerName == 'Collection Areas') {
-
-          if (result.attributes['Service Day']) {
-            day = result.attributes['Service Day'];
-          }
-          if (result.attributes['New Service Day']) {
-            newDay = result.attributes['New Service Day'];
-          }
-          if (result.attributes['New Recycling Week']) {
-            newWeek = result.attributes['New Recycling Week'];
-          }
-        }
-        if (result.layerName == 'Bi-Weekly Recycling Phase') {
-          if (result.attributes.WEEK) {
-            week = result.attributes.WEEK;
-          }
-        }
-      });
-      if ($(".callout", list).length == 0) {
-        if ((week != "" && day != "" && newDay != "" && newWeek != "")) {
-          if (day != newDay && week != newWeek) {
-            list.append("<div class='callout'><h4>Recycling & Waste Changes</h4>Starting <b>September 2013</b> your new collection day will be <b>" + newDay + "</b> and your new week will be <b>" + newWeek + "</b>.<br/><a href='http://www.raleighnc.gov/home/news/content/CorNews/Articles/SWSSeptemberChanges.html' target='_blank'>learn more</a></div>");
-          } else if (day != newDay) {
-            list.append("<div class='callout'><h4>Recycling & Waste Changes</h4>Starting <b>September 2013</b> your new collection day will be <b>" + newDay + "</b>.<br/><a href='http://www.raleighnc.gov/home/news/content/CorNews/Articles/SWSSeptemberChanges.html' target='_blank'>learn more</a></div>");
-          } else if (week != newWeek) {
-            list.append("<div class='callout'><h4>Recycling & Waste Changes</h4>Starting <b>September 2013</b> your new collection week will be <b>" + newWeek + "</b>.<br/><a href='http://www.raleighnc.gov/home/news/content/CorNews/Articles/SWSSeptemberChanges.html' target='_blank'>learn more</a></div>");
-          } else {
-            list.append("<div class='callout'><h4>Recycling & Waste Changes</h4>No changes will be made to your collection day or recycling week in <b>September 2013</b>.</div>");
-          }
-        }
-      }
-    },
     checkCase: function (value, caseType) {
       if (value) {
         switch (caseType) {
