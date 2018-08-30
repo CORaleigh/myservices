@@ -82,7 +82,7 @@
             title: "Leaf Collection",
             services: [{
               title: "Leaf Collection",
-              url: "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Leaf_Zones_With_Date/FeatureServer/0/query",
+              url: "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Leaf_Zones_With_Dates/FeatureServer/0/query",
               texts: [{
                   title: "<a href='https://ral.maps.arcgis.com/apps/webappviewer/index.html?id=09a3bfa3456f4d3b8ef3c0c3415d8cea&query=Leaf_Zones_With_Date_5085%2CObjectId%2C[ObjectId]'>Zone</a>:",
                   labels: "[SECTION]",
