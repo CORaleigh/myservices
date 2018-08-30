@@ -82,26 +82,32 @@
             title: "Leaf Collection",
             services: [{
               title: "Leaf Collection",
-              url: "https://maps.raleighnc.gov/arcgis/rest/services/Private/EditableFeatures/FeatureServer/2/query",
+              url: "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Leaf_Zones_With_Date/FeatureServer/0/query",
               texts: [{
                   title: "<a href='http://ral.maps.arcgis.com/apps/webappviewer/index.html?id=3ec0bcd2a27b4dae94e024a91b5aea5b&query=Leaf Collection Zones,SECTION,[SECTION]'>Zone</a>:",
-                  labels: "[SECTION]"
+                  labels: "[SECTION]",
+                  name: 'Leaf Section'
                 },
                 {
                     title: "<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Current Collection</a>:",
-                    labels: "[PASS]"
+                    labels: "[PASS]",
+                    name: 'Leaf Pass'
                 },                
                 {
                   title: "<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Current Status</a>:",
-                  labels: "[STATUS]"
+                  labels: "[STATUS]",
+                  name: 'Status'
                 },
                 {
                   title: "<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>First Collection</a>:",
-                  labels: "<br/>Place leaf piles at curb between [START_DATE:date] and [END_DATE:date]"
+                  labels: "<br/>Place leaf piles at curb between [START_DATE_1:date] and [END_DATE_1:date]",
+                  name: 'Pass 1 Date'
                 },
                 {
                   title: "<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Second Collection</a>:",
-                  labels: "<br/>Place leaf piles at curb between [START_DATE_1:date] and [END_DATE_1:date]"
+                  labels: "<br/>Place leaf piles at curb between [START_DATE_2:date] and [END_DATE_2:date]"
+                  ,
+                  name: 'Pass 2 Date'                  
                 }
                 // {
                 //   title: "<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Starts</a>:",
@@ -404,8 +410,9 @@
         Plugin.prototype.checkCityLimits(point).then(function (inlimits) {
             console.log(inlimits);
         Plugin.prototype.getCategories(defaults.services.categories, data).then(function () {
-          defaults.data = defaults.data.sort(Plugin.prototype.sortByCategory)
-          console.log(defaults.data)
+          defaults.data = defaults.data.sort(Plugin.prototype.sortByCategory);
+          
+         
           list.empty();
           var html = "";
           var numadded = 0;
@@ -413,7 +420,7 @@
             numadded = 0;
             list.append("<li><h4>" + item.category.title + "</h4></li>");
             var div = $("<ul class='nolist'></ul>");
-
+            item.features = item.features.sort(Plugin.prototype.sortByServiceOrder);
             $(item.features).each(function (i, feature) {
               if ((item.category.title === 'Leaf Collection' && !inlimits)) {
                   feature.features = [];
@@ -434,9 +441,10 @@
                       }
                     }
                   }
+
                   var li = $("<li></li>");
                   var html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " " + Plugin.prototype.getServiceLabel(text.labels, feature.service.layerId, feature.features[0]);
-
+                  
                   if (html.indexOf('Null') < 0 && html.indexOf('undefined') < 0) {
                     li.append(html);
                     div.append(li);
@@ -492,7 +500,14 @@
         return 1;
       return 0;
     },
+    sortByServiceOrder: function (a, b) {
 
+      if (a.service.title < b.service.title)
+        return -1;
+      if (a.service.title > b.service.title)
+        return 1;
+      return 0;
+    },
 
     getServices2: function (services, data) {
       var deferreds = [];
