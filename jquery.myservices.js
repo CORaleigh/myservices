@@ -84,7 +84,7 @@
               title: "Leaf Collection",
               url: "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Leaf_Zones_With_Dates/FeatureServer/0/query",
               texts: [{
-                  title: "<a href='https://ral.maps.arcgis.com/apps/webappviewer/index.html?id=09a3bfa3456f4d3b8ef3c0c3415d8cea&query=Leaf_Zones_With_Date_5085%2CObjectId%2C[ObjectId]'>Zone</a>:",
+                  title: "<a href='https://ral.maps.arcgis.com/apps/webappviewer/index.html?id=09a3bfa3456f4d3b8ef3c0c3415d8cea&query=Leaf_Zones_With_Dates_1726%2CObjectId%2C[ObjectId]'>Zone</a>:",
                   labels: "[SECTION]",
                   name: 'Leaf Section'
                 },
@@ -427,7 +427,7 @@
               }
               if (feature.features.length > 0) {
                 $(feature.service.texts).each(function (j, text) {
-                  if (item.category.title == "Leaf Collection") {
+                  if (item.category.title === "Leaf Collection") {
                     console.log(item);
                     if (feature.features[0].attributes.PASS) {
                       if (feature.features[0].attributes.PASS === "2") {
@@ -440,11 +440,37 @@
                         feature.features[0].attributes.PASS = 'First';
                       }
                     }
+                    
+                    if (feature.features[0].attributes.STATUS === 'CLOSED') {
+                      feature.features[0].attributes.STATUS = 'Closed';
+                    }
+                    if (feature.features[0].attributes.STATUS === 'COMPLETE') {
+                      feature.features[0].attributes.STATUS = 'Completed';
+                    }   
+                    if (feature.features[0].attributes.STATUS === 'INPROG') {
+                      feature.features[0].attributes.STATUS = 'In Progress';
+                    }        
+                    if (feature.features[0].attributes.STATUS === 'ON SCHEDULE') {
+                      feature.features[0].attributes.STATUS = 'On Schedule';
+                    }                   
+                    if (feature.features[0].attributes.STATUS === 'DELAYED') {
+                      feature.features[0].attributes.STATUS = 'Delayed';
+                    }          
+                    if (feature.features[0].attributes.STATUS === 'UPCOMING') {
+                      feature.features[0].attributes.STATUS = 'Upcoming';
+                    }          
+                                                                                                  
                   }
 
                   var li = $("<li></li>");
                   var html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " " + Plugin.prototype.getServiceLabel(text.labels, feature.service.layerId, feature.features[0]);
                   
+                  if ((text.name === 'Pass 1 Date' && feature.features[0].attributes.PASS_1_SCHEDULED === 'No')) {
+                    html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " Not Scheduled.  Check back on " + Plugin.prototype.dateToString(feature.features[0].attributes.START_DATE_1);
+                  }
+                  if ((text.name === 'Pass 2 Date' && feature.features[0].attributes.PASS_2_SCHEDULED === 'No')) {
+                    html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " Not Scheduled.  Check back on " + Plugin.prototype.dateToString(feature.features[0].attributes.START_DATE_2);
+                  }
                   if (html.indexOf('Null') < 0 && html.indexOf('undefined') < 0) {
                     li.append(html);
                     div.append(li);
@@ -587,6 +613,13 @@
       label = label.replace(new RegExp(";", "gi"), "<br/>");
       return label;
     },
+    dateToString: function (value) {
+      if (value != "Null") {
+        var date = new Date(value);
+        value = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+      }
+      return value;
+    },
     checkCase: function (value, caseType) {
       if (value) {
         switch (caseType) {
@@ -602,10 +635,7 @@
             value = value.replace(" Nc", " NC");
             break;
           case "date":
-            if (value != "Null") {
-              var date = new Date(value);
-              value = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
-            }
+            value = Plugin.prototype.dateToString(value);
             break;
         }
       } else {
