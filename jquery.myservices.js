@@ -55,14 +55,18 @@
             title: "Elections",
             services: [{
               title: 'Polling Place',
-              url: "https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/6/query",
+              url: "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Voting_Precincts_With_Polling_Places/FeatureServer/0/query",
               texts: [{
                   title: "<a href='http://www.wakegov.com/elections/Pages/default.aspx' target='_blank'>Polling Place</a>:",
-                  labels: "[WAKE.POLLING_PLACES.POLL_PL]"
+                  labels: "[POLL_PL]"
                 },
                 {
                   title: "<a href='http://www.wakegov.com/elections/Pages/default.aspx' target='_blank'>Voting Precinct</a>:",
-                  labels: "[WAKE.POLLING_PLACES.PRECINCT]"
+                  labels: "[PRECINCT]"
+                },
+                {
+                  title: "<a href='http://www.wakegov.com/elections/Pages/default.aspx' target='_blank'>Voting Precinct</a>:",
+                  labels: "[ST_NUMBER] [ST_NAME:proper], [CITY:proper]"
                 }
               ]
             }]
@@ -450,8 +454,8 @@
                     if (feature.features[0].attributes.STATUS === 'INPROG') {
                       feature.features[0].attributes.STATUS = 'In Progress';
                     }        
-                    if (feature.features[0].attributes.STATUS === 'ON SCHEDULE') {
-                      feature.features[0].attributes.STATUS = 'On Schedule';
+                    if (feature.features[0].attributes.STATUS === 'PLANNED') {
+                      feature.features[0].attributes.STATUS = 'Planned';
                     }                   
                     if (feature.features[0].attributes.STATUS === 'DELAYED') {
                       feature.features[0].attributes.STATUS = 'Delayed';
@@ -471,6 +475,13 @@
                   if ((text.name === 'Pass 2 Date' && feature.features[0].attributes.PASS_2_SCHEDULED === 'No')) {
                     html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " Not Scheduled.  Check back on " + Plugin.prototype.dateToString(feature.features[0].attributes.START_DATE_2);
                   }
+
+                  if ((text.name === 'Pass 1 Date' && new Date(feature.features[0].attributes.END_DATE_1) <= new Date())) {
+                    html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " Leaf collection ended on " + Plugin.prototype.dateToString(feature.features[0].attributes.END_DATE_1);
+                  }
+                  if ((text.name === 'Pass 2 Date' && new Date(feature.features[0].attributes.END_DATE_2) <= new Date())) {
+                    html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " Leaf collection ended on " + Plugin.prototype.dateToString(feature.features[0].attributes.END_DATE_2);
+                  }                  
                   if (html.indexOf('Null') < 0 && html.indexOf('undefined') < 0) {
                     li.append(html);
                     div.append(li);
