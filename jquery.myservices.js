@@ -113,10 +113,6 @@
                   ,
                   name: 'Pass 2 Date'                  
                 }
-                // {
-                //   title: "<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Starts</a>:",
-                //   labels: "[START_DATE:date]"
-                // }
               ]
             }]
           },
@@ -345,65 +341,6 @@
               latestWkid: 2264
             }
           },
-          extent = {
-            xmin: point.x - 2,
-            ymin: point.y - 2,
-            xmax: point.x + 2,
-            ymax: point.y + 2,
-            spatialReference: point.spatialReference
-          },
-          data = {
-            geometry: JSON.stringify(point),
-            layerDefs: JSON.stringify([{
-                "layerId": 1,
-                "where": "1=1",
-                "outfields": "NAME"
-              },
-              {
-                "layerId": 2,
-                "where": "1=1",
-                "outfields": "COUNCIL_DIST,COUNCIL_PERSON"
-              },
-              {
-                "layerId": 3,
-                "where": "1=1",
-                "outfields": "DISTRICT"
-              },
-              {
-                "layerId": 4,
-                "where": "1=1",
-                "outfields": "CASE_YEAR"
-              },
-              {
-                "layerId": 6,
-                "where": "1=1",
-                "outfields": "PRECINCT,POLL_PL"
-              },
-              {
-                "layerId": 8,
-                "where": "1=1",
-                "outfields": "SECTION,START_DATE"
-              },
-              {
-                "layerId": 10,
-                "where": "1=1",
-                "outfields": "BASINS"
-              },
-              {
-                "layerId": 12,
-                "where": "1=1",
-                "outfields": "DAY,RECYCLE,GARBAGE,YARDWASTE,WEEK"
-              },
-              {
-                "layerId": 14,
-                "where": "1=1",
-                "outfields": "DISTRICT"
-              }
-            ]),
-            geometryType: "esriGeometryPoint",
-            returnGeometry: false,
-            f: "pjson"
-          };
         data = {
           geometry: JSON.stringify(point),
           geometryType: "esriGeometryPoint",
@@ -415,8 +352,6 @@
             console.log(inlimits);
         Plugin.prototype.getCategories(defaults.services.categories, data).then(function () {
           defaults.data = defaults.data.sort(Plugin.prototype.sortByCategory);
-          
-         
           list.empty();
           var html = "";
           var numadded = 0;
@@ -435,12 +370,8 @@
                     console.log(item);
                     if (feature.features[0].attributes.PASS) {
                       if (feature.features[0].attributes.PASS === "2") {
-                        // text.labels = text.labels.replace("START_DATE", "START_DATE_1");
-                        // text.labels = text.labels.replace("END_DATE", "END_DATE_1");
                         feature.features[0].attributes.PASS = 'Second';
                       } else {
-                        // text.labels = text.labels.replace("START_DATE_1", "START_DATE");
-                        // text.labels = text.labels.replace("END_DATE_1", "END_DATE");
                         feature.features[0].attributes.PASS = 'First';
                       }
                     }
@@ -511,7 +442,7 @@
 
       $.each(categories, function (i, category) {
 
-        var def = Plugin.prototype.getServices2(category.services, data).then(function (results) {
+        var def = Plugin.prototype.queryServices(category.services, data).then(function (results) {
           defaults.data.push({
             category: category,
             features: defaults.features
@@ -546,7 +477,7 @@
       return 0;
     },
 
-    getServices2: function (services, data) {
+    queryServices: function (services, data) {
       var deferreds = [];
       var features = [];
       $.each(services, function (i, service) {
