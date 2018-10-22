@@ -188,6 +188,36 @@
 
   Plugin.prototype = {
     init: function () {
+      $(this.element).closest(".callout").css('overflow', 'visible');
+      if (Plugin.prototype.options.layers) {
+
+        var i = defaults.services.categories.length;
+        while (i--) {
+          var j = defaults.services.categories[i].services.length;
+
+          while (j--) {
+            if (Plugin.prototype.options.layers.indexOf(defaults.services.categories[i].services[j].title) < 0) {
+              defaults.services.categories[i].services.splice(j, 1);
+            }
+          }
+          if (defaults.services.categories[i].services.length === 0) {
+            defaults.services.categories.splice(i,1);
+          }
+        }
+
+
+        $(defaults.services.categories).each(function (i,category) {
+          $(category.services).each(function (j,service) {
+            if (Plugin.prototype.options.layers.indexOf(service.title) < 0) {
+              category.services.splice(j,1);
+              j--;
+            }
+          });
+          if (category.services.length === 0) {
+            defaults.services.categories.splice(i,1);
+          }
+        });
+      }
       var container = $(this.element);
       var list = $("<ul id='servicesList' class='nolist'></ul>");
       var input = $("<input class='typeahead' id='Address' type='text' placeholder='222 West Hargett Street'></input>").appendTo(container);
@@ -341,17 +371,28 @@
               latestWkid: 2264
             }
           },
+          extent = {
+            xmin: point.x - 2,
+            ymin: point.y - 2,
+            xmax: point.x + 2,
+            ymax: point.y + 2,
+            spatialReference: point.spatialReference
+          },
         data = {
           geometry: JSON.stringify(point),
           geometryType: "esriGeometryPoint",
           returnGeometry: false,
           f: "pjson",
           outFields: '*'
-        }
+        };
+
+
         Plugin.prototype.checkCityLimits(point).then(function (inlimits) {
             console.log(inlimits);
         Plugin.prototype.getCategories(defaults.services.categories, data).then(function () {
           defaults.data = defaults.data.sort(Plugin.prototype.sortByCategory);
+          
+         
           list.empty();
           var html = "";
           var numadded = 0;
@@ -519,23 +560,7 @@
         });
         return dfd.promise();       
     },
-    queryServices: function (data, url) {
-      var dfd = jQuery.Deferred();
 
-      $.ajax({
-        url: url,
-        type: 'GET',
-        dataType: 'jsonp',
-        data: data
-      }).then(function (data) {
-        dfd.resolve({
-          url: url,
-          features: data.features
-        });
-      });
-      return dfd.promise();
-
-    },
     getServiceLabel: function (label, id, service) {
       var plugin = this;
       var fieldCnt = label.split("[").length - 1;
