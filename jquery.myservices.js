@@ -55,14 +55,18 @@
             title: "Elections",
             services: [{
               title: 'Polling Place',
-              url: "https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/6/query",
+              url: "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Voting_Precincts_With_Polling_Places/FeatureServer/0/query",
               texts: [{
                   title: "<a href='http://www.wakegov.com/elections/Pages/default.aspx' target='_blank'>Polling Place</a>:",
-                  labels: "[WAKE.POLLING_PLACES.POLL_PL]"
+                  labels: "[POLL_PL]"
                 },
                 {
                   title: "<a href='http://www.wakegov.com/elections/Pages/default.aspx' target='_blank'>Voting Precinct</a>:",
-                  labels: "[WAKE.POLLING_PLACES.PRECINCT]"
+                  labels: "[PRECINCT]"
+                },
+                {
+                  title: "<a href='http://www.wakegov.com/elections/Pages/default.aspx' target='_blank'>Voting Precinct</a>:",
+                  labels: "[ST_NUMBER] [ST_NAME:proper], [CITY:proper]"
                 }
               ]
             }]
@@ -109,10 +113,6 @@
                   ,
                   name: 'Pass 2 Date'                  
                 }
-                // {
-                //   title: "<a href='/services/content/PublicWorks/Articles/AnnualLeafCollection.html'>Starts</a>:",
-                //   labels: "[START_DATE:date]"
-                // }
               ]
             }]
           },
@@ -341,65 +341,6 @@
               latestWkid: 2264
             }
           },
-          extent = {
-            xmin: point.x - 2,
-            ymin: point.y - 2,
-            xmax: point.x + 2,
-            ymax: point.y + 2,
-            spatialReference: point.spatialReference
-          },
-          data = {
-            geometry: JSON.stringify(point),
-            layerDefs: JSON.stringify([{
-                "layerId": 1,
-                "where": "1=1",
-                "outfields": "NAME"
-              },
-              {
-                "layerId": 2,
-                "where": "1=1",
-                "outfields": "COUNCIL_DIST,COUNCIL_PERSON"
-              },
-              {
-                "layerId": 3,
-                "where": "1=1",
-                "outfields": "DISTRICT"
-              },
-              {
-                "layerId": 4,
-                "where": "1=1",
-                "outfields": "CASE_YEAR"
-              },
-              {
-                "layerId": 6,
-                "where": "1=1",
-                "outfields": "PRECINCT,POLL_PL"
-              },
-              {
-                "layerId": 8,
-                "where": "1=1",
-                "outfields": "SECTION,START_DATE"
-              },
-              {
-                "layerId": 10,
-                "where": "1=1",
-                "outfields": "BASINS"
-              },
-              {
-                "layerId": 12,
-                "where": "1=1",
-                "outfields": "DAY,RECYCLE,GARBAGE,YARDWASTE,WEEK"
-              },
-              {
-                "layerId": 14,
-                "where": "1=1",
-                "outfields": "DISTRICT"
-              }
-            ]),
-            geometryType: "esriGeometryPoint",
-            returnGeometry: false,
-            f: "pjson"
-          };
         data = {
           geometry: JSON.stringify(point),
           geometryType: "esriGeometryPoint",
@@ -411,8 +352,6 @@
             console.log(inlimits);
         Plugin.prototype.getCategories(defaults.services.categories, data).then(function () {
           defaults.data = defaults.data.sort(Plugin.prototype.sortByCategory);
-          
-         
           list.empty();
           var html = "";
           var numadded = 0;
@@ -431,12 +370,8 @@
                     console.log(item);
                     if (feature.features[0].attributes.PASS) {
                       if (feature.features[0].attributes.PASS === "2") {
-                        // text.labels = text.labels.replace("START_DATE", "START_DATE_1");
-                        // text.labels = text.labels.replace("END_DATE", "END_DATE_1");
                         feature.features[0].attributes.PASS = 'Second';
                       } else {
-                        // text.labels = text.labels.replace("START_DATE_1", "START_DATE");
-                        // text.labels = text.labels.replace("END_DATE_1", "END_DATE");
                         feature.features[0].attributes.PASS = 'First';
                       }
                     }
@@ -450,8 +385,8 @@
                     if (feature.features[0].attributes.STATUS === 'INPROG') {
                       feature.features[0].attributes.STATUS = 'In Progress';
                     }        
-                    if (feature.features[0].attributes.STATUS === 'ON SCHEDULE') {
-                      feature.features[0].attributes.STATUS = 'On Schedule';
+                    if (feature.features[0].attributes.STATUS === 'PLANNED') {
+                      feature.features[0].attributes.STATUS = 'Planned';
                     }                   
                     if (feature.features[0].attributes.STATUS === 'DELAYED') {
                       feature.features[0].attributes.STATUS = 'Delayed';
@@ -471,6 +406,13 @@
                   if ((text.name === 'Pass 2 Date' && feature.features[0].attributes.PASS_2_SCHEDULED === 'No')) {
                     html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " Not Scheduled.  Check back on " + Plugin.prototype.dateToString(feature.features[0].attributes.START_DATE_2);
                   }
+
+                  if ((text.name === 'Pass 1 Date' && new Date(feature.features[0].attributes.END_DATE_1) <= new Date())) {
+                    html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " Leaf collection ended on " + Plugin.prototype.dateToString(feature.features[0].attributes.END_DATE_1);
+                  }
+                  if ((text.name === 'Pass 2 Date' && new Date(feature.features[0].attributes.END_DATE_2) <= new Date())) {
+                    html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " Leaf collection ended on " + Plugin.prototype.dateToString(feature.features[0].attributes.END_DATE_2);
+                  }                  
                   if (html.indexOf('Null') < 0 && html.indexOf('undefined') < 0) {
                     li.append(html);
                     div.append(li);
@@ -500,7 +442,7 @@
 
       $.each(categories, function (i, category) {
 
-        var def = Plugin.prototype.getServices2(category.services, data).then(function (results) {
+        var def = Plugin.prototype.queryServices(category.services, data).then(function (results) {
           defaults.data.push({
             category: category,
             features: defaults.features
@@ -535,7 +477,7 @@
       return 0;
     },
 
-    getServices2: function (services, data) {
+    queryServices: function (services, data) {
       var deferreds = [];
       var features = [];
       $.each(services, function (i, service) {
