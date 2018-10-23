@@ -398,7 +398,8 @@
           var numadded = 0;
           $(defaults.data).each(function (i, item) {
             numadded = 0;
-            list.append("<li><h4>" + item.category.title + "</h4></li>");
+            list.append("<li><h4 style='margin: 0;padding: 10px 0 10px 0;color: #4A8B2C;line-height: 1;border-bottom: 1px solid #4A8B2C;font-weight: 700;'>" + item.category.title + "</h4></li>");
+
             var div = $("<ul class='nolist'></ul>");
             item.features = item.features.sort(Plugin.prototype.sortByServiceOrder);
             $(item.features).each(function (i, feature) {
