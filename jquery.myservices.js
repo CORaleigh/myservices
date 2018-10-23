@@ -75,7 +75,7 @@
             title: "Environmental",
             services: [{
               title: 'Drainage Basin',
-              url: "https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/10/query",
+              url: "https://maps.raleighnc.gov/arcgis/rest/services/PublicWorks/Stormwater/MapServer/12/query",
               texts: [{
                 title: "<a href='/services/content/PWksStormwater/Articles/Stormwater.html'>Drainage Basin</a>:",
                 labels: "[BASINS:proper]"
