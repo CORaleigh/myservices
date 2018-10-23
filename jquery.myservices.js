@@ -362,6 +362,7 @@
     },
     getServices: function (geometry) {
       var list = $("#servicesList");
+      list.empty();
       if (defaults.services) {
         var point = {
             x: geometry.x,
