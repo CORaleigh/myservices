@@ -236,7 +236,9 @@
     },
     inputKeyDown: function (e) {
       if (e.keyCode === 13) {
-        Plugin.prototype.geocodeAddress($(this).val());
+        $(this).off('keydown');
+        setTimeout(function () {
+                $("#Address").keydown(Plugin.prototype.inputKeyDown);}, 5000);
       }
     },
     geocodeAddress: function (address) {
