@@ -75,7 +75,7 @@
             title: "Environmental",
             services: [{
               title: 'Drainage Basin',
-              url: "https://maps.raleighnc.gov/arcgis/rest/services/PublicWorks/Stormwater/MapServer/12/query",
+              url: "https://maps.raleighnc.gov/arcgis/rest/services/Services/PortalServices/MapServer/10/query",
               texts: [{
                 title: "<a href='/services/content/PWksStormwater/Articles/Stormwater.html'>Drainage Basin</a>:",
                 labels: "[BASINS:proper]"
@@ -236,9 +236,10 @@
     },
     inputKeyDown: function (e) {
       if (e.keyCode === 13) {
-        $(this).off('keydown');
-        setTimeout(function () {
-                $("#Address").keydown(Plugin.prototype.inputKeyDown);}, 5000);
+        Plugin.prototype.geocodeAddress($(this).val());
+      	$(this).off('keydown');
+      	setTimeout(function () { 
+		$("#Address").keydown(Plugin.prototype.inputKeyDown);}, 5000);
       }
     },
     geocodeAddress: function (address) {
@@ -364,7 +365,7 @@
     },
     getServices: function (geometry) {
       var list = $("#servicesList");
-      list.empty();
+	  list.empty();
       if (defaults.services) {
         var point = {
             x: geometry.x,
@@ -452,12 +453,12 @@
                     html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " Not Scheduled.  Check back on " + Plugin.prototype.dateToString(feature.features[0].attributes.START_DATE_2);
                   }
 
-                  if ((text.name === 'Pass 1 Date' && new Date(feature.features[0].attributes.END_DATE_1) <= new Date())) {
-                    html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " Leaf collection ended on " + Plugin.prototype.dateToString(feature.features[0].attributes.END_DATE_1);
-                  }
-                  if ((text.name === 'Pass 2 Date' && new Date(feature.features[0].attributes.END_DATE_2) <= new Date())) {
-                    html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " Leaf collection ended on " + Plugin.prototype.dateToString(feature.features[0].attributes.END_DATE_2);
-                  }                  
+                  //if ((text.name === 'Pass 1 Date' && new Date(feature.features[0].attributes.END_DATE_1) <= new Date())) {
+                  //  html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " Leaf collection ended on " + Plugin.prototype.dateToString(feature.features[0].attributes.END_DATE_1);
+                  //}
+                  //if ((text.name === 'Pass 2 Date' && new Date(feature.features[0].attributes.END_DATE_2) <= new Date())) {
+                  //  html = Plugin.prototype.getServiceLabel(text.title, feature.service.layerId, feature.features[0]) + " Leaf collection ended on " + Plugin.prototype.dateToString(feature.features[0].attributes.END_DATE_2);
+                  //}                  
                   if (html.indexOf('Null') < 0 && html.indexOf('undefined') < 0) {
                     li.append(html);
                     div.append(li);
