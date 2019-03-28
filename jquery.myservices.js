@@ -51,7 +51,7 @@
               },
 	      {
 		title: "Hospitality District",
-		url: "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Hospitality_District_Form/FeatureServer/1",
+		url: "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Hospitality_District_Form/FeatureServer/1/query",
 		texts: [{
 		   title: "<a href='https://www.raleighnc.gov/home/content/CityMgrAdmin/Articles/GlenwoodSouthHospitalityDistrict.html'>Inside Hospitality District</a>:",
 		   labels: "Yes"
