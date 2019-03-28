@@ -48,7 +48,15 @@
                   title: "<a href='/safety/content/Police/Articles/[DISTRICT]District.html'>Police District</a>:",
                   labels: "[DISTRICT]"
                 }]
-              }
+              },
+	      {
+		title: "Hospitality District",
+		url: "https://services.arcgis.com/v400IkDOw1ad7Yad/arcgis/rest/services/Hospitality_District_Form/FeatureServer/1",
+		text: [{
+		   title: "<a href='https://www.raleighnc.gov/home/content/CityMgrAdmin/Articles/GlenwoodSouthHospitalityDistrict.html'>Inside Hospitality District</a>:",
+		   labels: "Yes"
+		}]
+	       }
             ]
           },
           {
